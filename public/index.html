@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Agency</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href='//fonts.googleapis.com/css?family=Montserrat:thin,extra-light,light,100,200,300,400,500,600,700,800' 
+rel='stylesheet' type='text/css'>
+</head>
+<body>
+    <header>
+        <h1>Travel Agency</h1>
+    </header>
+    <main>
+
+        <h1>Planet Routes Finder</h1>
+
+        <label for="source-planet">Select Source Planet:</label>
+        <select id="source-planet">
+            <!-- Options for source planets will be dynamically added by JavaScript -->
+        </select>
+    
+        <label for="destination-planet">Select Destination Planet:</label>
+        <select id="destination-planet">
+            <!-- Options for destination planets will be dynamically added by JavaScript -->
+        </select>
+    
+        <button id="findRoutesButton">Find Routes</button>
+        <div id="sorting-options">
+            <input type="radio" id="sort-ascending" name="sort" value="ascending" checked>
+            <label for="sort-ascending">Sort by Distance (Ascending)</label>
+            <input type="radio" id="sort-descending" name="sort" value="descending">
+            <label for="sort-descending">Sort by Distance (Descending)</label>
+        </div>
+        <!-- Display routes and providers here -->
+        <div id="route-results"></div>
+            <div id="route-options">
+                <!-- Route options will be added dynamically using JavaScript -->
+            </div>
+            <div id="flightDetails">
+                <!-- Display flight details here when a route is selected -->
+            </div>
+        <div id="provider-list-section" style="display: block;">
+            <label for="sort-by">Sort by:</label>
+            <select id="sort-by">
+                <option value="price">Price</option>
+                <option value="name">Name</option>
+                <option value="flight-time">Flight Time</option>
+                <option value="departure-time">Departure Time</option>
+            </select>
+       
+            <h2>Providers:</h2>
+           <!-- <ul id="providers"></ul>-->
+              <ul id="flights-list">
+                <!-- Matching providers will be dynamically added here -->
+              </ul>
+        </div>
+        <div id="log-messages"></div>
+
+    </main>
+    <footer>
+        <p>&copy; 2023 Travel Agency</p>
+    </footer>
+    <script src="script.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+/* Reset some default styles for consistency */
+body, h1, h2, p, form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Basic styling for the header */
+header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+/* Styling for the main content */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Styling for the route selection form */
+#route-selection {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+label {
+    font-weight: bold;
+}
+
+select, button {
+    margin-top: 10px;
+}
+
+/* Styling for the sorting options */
+#sorting-options {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Style for radio buttons */
+input[type="radio"] {
+    display: none; /* Hide the default radio buttons */
+}
+
+/* Style for custom radio buttons (checkmark) */
+label[for="sort-ascending"], label[for="sort-descending"] {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+}
+
+/* Checkmark for the custom radio buttons */
+label[for="sort-ascending"]::before, label[for="sort-descending"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    border-radius: 50%;
+}
+
+/* Style for the selected custom radio button */
+input[type="radio"]:checked + label::before {
+    background-color: #333;
+}
+
+/* Styling for the route results section */
+
+/* Basic styling for the footer */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #333;
+    color: #fff;
+}
+
+.selected {
+    background-color: #ffcc00; /* Change to your preferred highlight color */
+}
+
+html {
+    font-family: 'montserrat';
+}
+#flights-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.flight-item {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flight-item:hover {
+    background-color: #e0e0e0;
+}
+
+.flight-info {
+    font-weight: bold;
+}
+
+.flight-details {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+/* Add more styling as needed */
+
+/* Alternate row colors */
+.flight-item:nth-child(even) {
+    background-color: #f5f5f5;
+}
