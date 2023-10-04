@@ -1,3 +1,11 @@
+let routeCheckbox_id2
+
+function getcheckedboxid() {
+    console.log('saadamevaartuse',routeCheckbox_id2)
+return routeCheckbox_id2
+
+}
+
 function calculateTotalDistance(legs, route) {
     let totalDistance = 0;
     for (let i = 0; i < route.length - 1; i++) {
@@ -143,6 +151,7 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
     return providersForLeg;
 }
 
+
 function showRouteOptions(routes, legs) {
     const sourcePlanetDropdown = document.getElementById('source-planet');
         const destinationPlanetDropdown = document.getElementById('destination-planet');
@@ -165,8 +174,9 @@ let selectedRoute = null;
         const routeCheckbox = document.createElement('input');
         routeCheckbox.type = 'checkbox';
         routeCheckbox.id = `route-checkbox-${index}`;
+        routeCheckbox.id2 = `${index}`; //addedbyK
+        let routeCheckbox_id2 = routeCheckbox.id2;
         routeCheckbox.value = route.join(' -> ');
-
         // Create a label for the checkbox with route details
         const routeLabel = document.createElement('label');
         routeLabel.textContent = `${route.join(' -> ')} (Distance: ${totalDistance} km)`;
@@ -176,12 +186,15 @@ let selectedRoute = null;
         routeOptionContainer.addEventListener('click', () => {
             // Toggle the checkbox when the container is clicked
             routeCheckbox.checked = !routeCheckbox.checked;
-
+            
             if (routeCheckbox.checked) {
                 selectedRoute = route;
+                console.log(routeCheckbox_id2)
+
             } else {
                 selectedRoute = null;
             }
+            
         });
     
         // Add the checkbox and label to the container
@@ -300,4 +313,4 @@ function fetchPlanets() {
         });
 }
 
-export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg};
+export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg, getcheckedboxid, routeCheckbox_id2};
