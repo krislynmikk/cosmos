@@ -1,10 +1,4 @@
-let routeCheckbox_id2
-
-function getcheckedboxid() {
-    console.log('saadamevaartuse',routeCheckbox_id2)
-return routeCheckbox_id2
-
-}
+let CheckedRouteArrIndex //variable for script.js to show selecter route detailed information
 
 function calculateTotalDistance(legs, route) {
     let totalDistance = 0;
@@ -151,7 +145,6 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
     return providersForLeg;
 }
 
-
 function showRouteOptions(routes, legs) {
     const sourcePlanetDropdown = document.getElementById('source-planet');
         const destinationPlanetDropdown = document.getElementById('destination-planet');
@@ -174,8 +167,7 @@ let selectedRoute = null;
         const routeCheckbox = document.createElement('input');
         routeCheckbox.type = 'checkbox';
         routeCheckbox.id = `route-checkbox-${index}`;
-        routeCheckbox.id2 = `${index}`; //addedbyK
-        let routeCheckbox_id2 = routeCheckbox.id2;
+        
         routeCheckbox.value = route.join(' -> ');
         // Create a label for the checkbox with route details
         const routeLabel = document.createElement('label');
@@ -185,17 +177,24 @@ let selectedRoute = null;
         // Add a click event listener to the container to handle route selection
         routeOptionContainer.addEventListener('click', () => {
             // Toggle the checkbox when the container is clicked
-            routeCheckbox.checked = !routeCheckbox.checked;
-            
+            if (CheckedRouteArrIndex !== null && CheckedRouteArrIndex !== index) {
+                // Uncheck the previously selected checkbox
+                const previouslySelectedCheckbox = document.getElementById(`route-checkbox-${CheckedRouteArrIndex}`);
+                if (previouslySelectedCheckbox) {
+                    previouslySelectedCheckbox.checked = false;
+                }
+            }
+             //get selected route array index and send it to script.js
+             CheckedRouteArrIndex = index;
+             routeCheckbox.checked = !routeCheckbox.checked;
+            console.log("test3", index)
             if (routeCheckbox.checked) {
                 selectedRoute = route;
-                console.log(routeCheckbox_id2)
-
             } else {
                 selectedRoute = null;
             }
             
-        });
+        }); 
     
         // Add the checkbox and label to the container
         routeOptionContainer.appendChild(routeCheckbox);
@@ -209,23 +208,11 @@ let selectedRoute = null;
 
     // Add a click event listener to the "Next" button
     nextButton.addEventListener('click', () => {
-        // Query all checkboxes within the routeOptionsDiv
-        const checkboxes = routeOptionsDiv.querySelectorAll('input[type="checkbox"]');
-        const selectedCheckbox = Array.from(checkboxes).find((checkbox) => checkbox.checked);
-    
-        if (selectedCheckbox) {
+        const selectedCheckbox = document.getElementById(`route-checkbox-${CheckedRouteArrIndex}`);
+
+        if (selectedCheckbox && selectedCheckbox.checked) {
             const selectedRouteValue = selectedCheckbox.value;
             console.log('Selected Route:', selectedRouteValue);
-            function formatDateTime(dateTimeString) {
-                const options = { 
-                    day: '2-digit', 
-                    month: '2-digit', 
-                    year: 'numeric', 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                };
-                return new Date(dateTimeString).toLocaleString(undefined, options);
-            }
     
             // You can perform actions with the selected route here
             // For example, you can proceed to the provider list
@@ -313,4 +300,5 @@ function fetchPlanets() {
         });
 }
 
-export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg, getcheckedboxid, routeCheckbox_id2};
+
+export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg, CheckedRouteArrIndex};

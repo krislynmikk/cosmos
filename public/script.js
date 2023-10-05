@@ -1,4 +1,4 @@
-import {findRoutes, calculateTotalDistance, showRouteOptions, fetchPlanets, findProvidersForLeg, getcheckedboxid, routeCheckbox_id2} from './function.js';
+import {findRoutes, calculateTotalDistance, showRouteOptions, fetchPlanets, findProvidersForLeg, CheckedRouteArrIndex} from './function.js';
 
 const API = 'http://localhost:5001/api/v1.0/TravelPrices';
 let selectedRoute = null; // To store the selected route
@@ -75,11 +75,10 @@ function updateFlightsList(selectedRoute, legs) {
 // Call the fetchPlanets function when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded event fired.');
-    console.log('routeCheckbox_id2:', routeCheckbox_id2);
+    
 
     // You can also call functions that use routeCheckbox_id2 here
-    const checkedBoxId = getcheckedboxid();
-    console.log('checkedBoxId:', checkedBoxId);
+    
     fetchPlanets();
     const findRoutesButton = document.getElementById('findRoutesButton');
     let nextButton = document.getElementById('proceedToProviders'); // Move the declaration of nextButton here
@@ -141,9 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             nextButton = document.getElementById('proceedToProviders');
             nextButton.addEventListener('click', () => {
+                //const checkedBoxId = SendRecSelRouteIndex();
+                
+                selectedRoute = routes[CheckedRouteArrIndex]; //selected route comes from function.js
+                console.log("test1", routes[CheckedRouteArrIndex])
+                console.log("test2", CheckedRouteArrIndex)
                 if (selectedRoute) {
                     console.log('Next button clicked. Selected Route:', selectedRoute);
-                   console.log( getcheckedboxid())
+                   //console.log( getcheckedboxid())
                     
                     // Find flights for each leg of the selected route
                     const flightsForLegs = findFlightsForLegs(legs, selectedRoute);
@@ -160,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     findRoutesButton.addEventListener('click', fetchAndDisplayRoutes);
     document.getElementById('sort-ascending').addEventListener('change', fetchAndDisplayRoutes);
     document.getElementById('sort-descending').addEventListener('change', fetchAndDisplayRoutes);
+    
 });
 function clearFlightsList() {
     const flightsList = document.getElementById('flights-list');
