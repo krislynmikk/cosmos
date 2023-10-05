@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 selectedRoute = routes[0];
                
-                console.log('Selected Route uus:', selectedRoute);
+                console.log('Selected Route2:', selectedRoute);
 
                 // Display the route options
                 showRouteOptions(routes, legs);
