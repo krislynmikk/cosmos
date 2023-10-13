@@ -106,8 +106,7 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
                 ).getTime(); // Convert to Unix timestamp (milliseconds)
                 const flightTimeInSeconds =
                     (flightEndUnix - flightStartUnix) / 1000; // Calculate flight time in seconds
-
-                // Calculate days, hours, minutes, and seconds
+                    // Calculate days, hours, minutes, and seconds
                 const secondsInMinute = 60;
                 const minutesInHour = 60;
                 const hoursInDay = 24;

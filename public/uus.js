@@ -322,3 +322,58 @@ async function main() {
 }
 
 main();
+
+
+
+
+_______________
+flightItem.querySelector('.select-flight').addEventListener('click', () => {
+    // Move to the next leg when "Select Flight" is clicked
+    const selectedFlight = flight; // Capture the specific flight
+
+    // Find the index of the selected flight in the current leg's flights
+    const flightIndex = leg.flights.indexOf(selectedFlight);
+    // if (showInfoLaterThan > flight.flightStart) {}
+    if (flightIndex < leg.flights.length - 1) {
+    const flightEndUnix = new Date(flight.flightEnd).getTime();
+    const flightStartUnix = new Date(leg.flight[flightIndex + 1].flightStart).getTime();
+
+    // Check if there is a next leg, and display its flights
+    if (flightEndUnix <= flightStartUnix) {
+        
+        currentFlightIndex = flightIndex + 1;
+    displayFlightsForLeg(leg);
+    } } else {
+        // Show an error message because the flights are not compatible
+        console.error('Cannot select this flight. Overlapping schedule.');
+    }
+});
+
+flightsList.appendChild(flightItem);
+});
+}
+let currentFlightIndex = 0
+
+
+töötav
+
+
+flightItem.querySelector('.select-flight').addEventListener('click', () => {
+    // Move to the next leg when "Select Flight" is clicked
+    currentLegIndex++;
+    console.log("currentlegindex muutuja", currentLegIndex)
+    // if (showInfoLaterThan > flight.flightStart) {}
+    const flightStartUnix = new Date(flight.flightStart).getTime();
+    const flightEndUnix = new Date(flight.flightEnd).getTime();
+console.log("lend end", flightEndUnix)
+console.log("lend start", flightStartUnix)
+    // Check if there is a next leg, and display its flights
+    if (currentLegIndex < flightsForLegs.length) {
+        displayFlightsForLegs(flightsForLegs[currentLegIndex]);
+    }
+});
+
+flightsList.appendChild(flightItem);
+});
+}
+let currentLegIndex = 0

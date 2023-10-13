@@ -1,4 +1,16 @@
 let CheckedRouteArrIndex //variable for script.js to show selecter route detailed information
+let selectedRouteIndex = null;
+let selectedFlights = []
+let flightEndUnix_1
+let flightStartUnix_1
+let flightEndUnix
+let flightStartUnix
+
+function convertToUnixTimestamp(iso8601Date) {
+    const date = new Date(iso8601Date);
+    const unixTimestamp = date.getTime();
+    return unixTimestamp;
+  }
 
 function calculateTotalDistance(legs, route) {
     let totalDistance = 0;
@@ -60,13 +72,14 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
             // Filter the providers based on the flight start and end times
             let previousFlightEnd = 0;
             const filteredProviders = leg.providers.filter((provider) => {
-                const flightStartUnix = new Date(provider.flightStart).getTime();
-                const flightEndUnix = new Date(provider.flightEnd).getTime();
-
+                 flightStartUnix = new Date(provider.flightStart).getTime();
+                 flightEndUnix = new Date(provider.flightEnd).getTime();
                 // Check if the flight starts after the previous flight ends
+                console.log("flightend_1 on siin>>>>>>>>>>>>>", flightEndUnix_1)
                 if (flightStartUnix >= previousFlightEnd) {
                     // Update the previousFlightEnd to the current flight's end time
-                    previousFlightEnd = flightEndUnix;
+                 //   previousFlightEnd = flightEndUnix; <----- kuvab järgmine lend algab peale eelmise lõppu
+
                     return true;
                 }
 
@@ -75,19 +88,22 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
 
             // Add the filtered providers to the list
             filteredProviders.forEach((provider) => {
-                const flightStartUnix = new Date(
+                 flightStartUnix = new Date(
                     provider.flightStart
                 ).getTime(); // Convert to Unix timestamp (milliseconds)
-                const flightEndUnix = new Date(
+                 flightEndUnix = new Date(
                     provider.flightEnd
                 ).getTime(); // Convert to Unix timestamp (milliseconds)
                 const flightTimeInSeconds =
                     (flightEndUnix - flightStartUnix) / 1000; // Calculate flight time in seconds
-
                 // Calculate days, hours, minutes, and seconds
                 const secondsInMinute = 60;
                 const minutesInHour = 60;
                 const hoursInDay = 24;
+                console.log("!???????????????", provider.flightStart)
+ flightStartUnix_1 = convertToUnixTimestamp(provider.flightStart);
+ flightEndUnix_1 = convertToUnixTimestamp(provider.flightEnd);
+console.log("KATSETUS", flightEndUnix_1, flightStartUnix_1)
 
                 const days = Math.floor(
                     flightTimeInSeconds /
@@ -130,6 +146,7 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
                         minute: "2-digit",
                     }
                 );
+                console.log("-------------------------------------aeg" , flightEndUnix, formattedFlightEnd)
 
                 providersForLeg.push({ // see rida näitab front-endis lendude listi
                     name: provider.company.name,
@@ -141,9 +158,79 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
             });
         }
     });
+   
 
     return providersForLeg;
 }
+function parseCustomDateStringToTimestamp(dateString) {
+    if (dateString) {
+        // Split the date and time using the appropriate separator 'T'
+        const parts = dateString.split('T');
+
+        if (parts.length === 2) {
+            const datePart = parts[0];
+            const timePart = parts[1];
+
+            // Split time components further, assuming time format is "HH:mm:ss.sssZ"
+            const timeComponents = timePart.split(':');
+
+            if (timeComponents.length >= 3) {
+                const [year, month, day] = datePart.split('-');
+                const [hours, minutes, seconds] = timeComponents[0].split('.');
+
+                // Create a new Date object and convert to Unix timestamp (milliseconds)
+                const parsedDate = new Date(year, month - 1, day, hours, minutes, seconds);
+                const unixTimestamp = parsedDate.getTime();
+
+                if (!isNaN(unixTimestamp)) {
+                    return unixTimestamp; // Return Unix timestamp
+                }
+            }
+        }
+    }
+
+    console.error('Invalid date format. Cannot split into date and time.');
+    return null; // Return null to indicate an error
+}
+  
+function handleFlightSelection(leg, routes) {
+    if (selectedRouteIndex === null) {
+        console.error('No route selected.');
+        return;
+    }
+
+    const selectedRoute = routes[selectedRouteIndex];
+
+    if (!selectedRoute) {
+        console.error('Invalid selected route.');
+        return;
+    }
+
+    if (selectedFlights.length === 0) {
+        // First flight in the route, add it to the selected flights
+        selectedFlights.push(leg);
+    } else {
+        // Check compatibility with the previous flight
+        const lastSelectedFlight = selectedFlights[selectedFlights.length - 1];
+console.log("eeeeeeeeeeeeeeeee", lastSelectedFlight)
+
+        // Ensure that leg.flightStart is in a valid format that can be parsed into a Date object
+        const currentFlightStart = parseCustomDateStringToTimestamp(leg.flightStart);
+        const lastFlightEnd = parseCustomDateStringToTimestamp(lastSelectedFlight.flightEnd);
+        console.log("<<--------<-----------<-", selectedFlights.length)
+        console.log("oooooooooooooooooo",currentFlightStart, lastFlightEnd )
+
+
+ if (lastFlightEnd <= currentFlightStart) {
+            // The selected flight's flightEnd is before or equal to the current flight's flightStart
+            selectedFlights.push(leg);
+        } else {
+            // The flights are not compatible; handle this case, e.g., show an error message
+            console.error('Cannot select this flight. Overlapping schedule.');
+        }
+    }
+}
+
 
 function showRouteOptions(routes, legs) {
     const sourcePlanetDropdown = document.getElementById('source-planet');
@@ -176,25 +263,26 @@ let selectedRoute = null;
 
         // Add a click event listener to the container to handle route selection
         routeOptionContainer.addEventListener('click', () => {
-            // Toggle the checkbox when the container is clicked
+            const routeCheckbox = document.getElementById(`route-checkbox-${index}`);
+        
             if (CheckedRouteArrIndex !== null && CheckedRouteArrIndex !== index) {
-                // Uncheck the previously selected checkbox
                 const previouslySelectedCheckbox = document.getElementById(`route-checkbox-${CheckedRouteArrIndex}`);
                 if (previouslySelectedCheckbox) {
                     previouslySelectedCheckbox.checked = false;
                 }
+                selectedRouteIndex = null;
+                selectedFlights.length = 0; // Clear selected flights when selecting a new route
             }
-             //get selected route array index and send it to script.js
-             CheckedRouteArrIndex = index;
-             routeCheckbox.checked = !routeCheckbox.checked;
-            console.log("test3", index)
+        
+            CheckedRouteArrIndex = index;
+            routeCheckbox.checked = !routeCheckbox.checked;
+        
             if (routeCheckbox.checked) {
-                selectedRoute = route;
-            } else {
-                selectedRoute = null;
+                selectedRouteIndex = index;
+                selectedFlights.length = 0; // Initialize selected flights for the new route
             }
-            
-        }); 
+        });
+        
     
         // Add the checkbox and label to the container
         routeOptionContainer.appendChild(routeCheckbox);
@@ -211,8 +299,14 @@ let selectedRoute = null;
         const selectedCheckbox = document.getElementById(`route-checkbox-${CheckedRouteArrIndex}`);
 
         if (selectedCheckbox && selectedCheckbox.checked) {
-            const selectedRouteValue = selectedCheckbox.value;
-            console.log('Selected Route:', selectedRouteValue);
+            const selectedRoute = routes[selectedRouteIndex];
+    
+            if (selectedRoute) {
+                for (let i = 0; i < selectedRoute.length; i++) {
+                    const leg = selectedRoute[i];
+                    handleFlightSelection(leg, routes);
+                }
+            }
     
             // You can perform actions with the selected route here
             // For example, you can proceed to the provider list
@@ -247,6 +341,7 @@ let selectedRoute = null;
             .catch(error => {
                 console.error('Error fetching flight data:', error);
             });
+            
         } else {
             alert('Please select a route before proceeding.');
         }
@@ -301,4 +396,4 @@ function fetchPlanets() {
 }
 
 
-export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg, CheckedRouteArrIndex};
+export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg, CheckedRouteArrIndex,  flightStartUnix_1, flightEndUnix_1};
