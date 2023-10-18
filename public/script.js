@@ -3,13 +3,11 @@ import {findRoutes, calculateTotalDistance, showRouteOptions, fetchPlanets, find
 const API = 'http://localhost:5001/api/v1.0/TravelPrices';
 let selectedRoute = null; // To store the selected route
 let flightsForLegs = null;
+let flightStartUnix_2
+let flightEndUnix_2
 let selectedRouteIndex = null;
 const selectedFlights = []; // To store selected flights in the selected route
-function convertToUnixTimestamp(iso8601Date) {
-    const date = new Date(iso8601Date);
-    const unixTimestamp = date.getTime();
-    return unixTimestamp;
-  }
+
   function customFormatToUnixTimestamp(dateTimeString) {
     const parts = dateTimeString.match(/(\d+)/g);
     
@@ -31,7 +29,7 @@ function convertToUnixTimestamp(iso8601Date) {
   
 //  const dateTimeString = "25.10.2023, 14:35";
  // const unixTimestamp = customFormatToUnixTimestamp(dateTimeString);
- // console.log(unixTimestamp);
+ // // console.log(unixTimestamp);
 
 // Define the findFlightsForLegs function here
 function findFlightsForLegs(legs, selectedRoute) {
@@ -87,56 +85,63 @@ function displayFlightsForLegs(leg) {
         
         `;
       
-        flightItem.querySelector('.select-flight').addEventListener('click', () => {
+    flightItem.querySelector('.select-flight').addEventListener('click', () => {
             // Move to the next leg when "Select Flight" is clicked
             const selectedFlight = flight; // Capture the specific flight
 
             // Find the index of the selected flight in the current leg's flights
             const flightIndex = leg.flights.indexOf(selectedFlight);
-            console.log("!!!!!!!!!!!!selected flight flightstart", selectedFlight.flightStart)
-            console.log("selectedFlight:", selectedFlight);
-            console.log("flightIndex", flightIndex);
+             console.log("!!!!!!!!!!!!selected flight flightstart", selectedFlight.flightStart)
+             console.log("!!!!!!!!!!!!selected flight flightend", selectedFlight.flightEnd)
+             console.log("!!!!!!!!!!!!selected flight flightstartunix", customFormatToUnixTimestamp(selectedFlight.flightStart))
+             console.log("!!!!!!!!!!!!selected flight flightendunix", customFormatToUnixTimestamp(selectedFlight.flightEnd))
+            // console.log("selectedFlight:", selectedFlight);
+            // console.log("flightIndex", flightIndex);
 
-         //   const flightStartUnix_1 = calculateFlightStartUnix(selectedFlight)
-          //  const flightEndUnix_1 = calculateFlightStartUnix(selectedFlight)
+           flightStartUnix_2 = customFormatToUnixTimestamp(selectedFlight.flightStart)
+            flightEndUnix_2 = customFormatToUnixTimestamp(selectedFlight.flightEnd)
 
             
-console.log("Accessing flightStartUnix from another script:", flightStartUnix_1);
-console.log("Accessing flightEndUnix from another script:", flightEndUnix_1);
+// console.log("Accessing flightStartUnix from another script:", flightStartUnix_1);
+// console.log("Accessing flightEndUnix from another script:", flightEndUnix_1);
             currentLegIndex++;
-            console.log("currentlegindex muutuja", currentLegIndex)
+            // console.log("currentlegindex muutuja", currentLegIndex)
             // if (showInfoLaterThan > flight.flightStart) {}
 
 
             // Check if there is a next leg, and display its flights
             if (currentLegIndex < flightsForLegs.length) {
                 displayFlightsForLegs(flightsForLegs[currentLegIndex]);
-                console.log("hei vaata siia", flightIndex)
+                // console.log("hei vaata siia", flightIndex)
 
             }
         });
-        console.log("TTTTTTTTT/n",flight.flightEnd)
-        if (customFormatToUnixTimestamp(flight.flightEnd) < convertToUnixTimestamp(flightStartUnix_1)) {
-            console.log("<--------SIIN ON FLIGHTSTARTUNIX_1", flightStartUnix_1)
+        console.log(flightStartUnix_2)
+        console.log(flightEndUnix_2)
+    //    // console.log("TTTTTTTTT/n",customFormatToUnixTimestamp(flight.flightEnd))
+     //   // console.log("<--------SIIN ON FLIGHTSTARTUNIX_1", flightStartUnix_1)
+     if (flightEndUnix_2 == undefined) {
+     flightsList.appendChild(flightItem);
+     }else {
+     if (flightEndUnix_2 < customFormatToUnixTimestamp(flight.flightStart)) { // see on lendude kuvamises kellaajaga korrelatsioonis
+            
+            
+
         flightsList.appendChild(flightItem);
-        }
+       }
+ 
+       }
+       
     });
 }
 let currentLegIndex = 0
-function calculateFlightStartUnix(selectedFlight) {
-    if (selectedFlight && selectedFlight.flightStart) {
-        // Convert the flightStart to Unix timestamp as previously discussed
-        const flightStartUnix = convertToUnixTimestamp(selectedFlight.flightStart);
-        return flightStartUnix;
-    }
-    return null;
-}
+
 
 function updateFlightsList(selectedRoute, legs) {
     if (selectedRoute) {
         // Find flights for each leg of the selected route
         flightsForLegs = findFlightsForLegs(legs, selectedRoute);
-        console.log("console", flightsForLegs)
+        // console.log("console", flightsForLegs)
         // Display flights for each leg
         displayFlightsForLegs(flightsForLegs[0]);
     } else {
@@ -146,8 +151,9 @@ function updateFlightsList(selectedRoute, legs) {
 
 // Call the fetchPlanets function when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded event fired.');
-    
+    // console.log('DOMContentLoaded event fired.');
+   // flightEndUnix_2 = flightEndUnix_1
+   // flightStartUnix_2 = flightStartUnix_1
 
     // You can also call functions that use routeCheckbox_id2 here
     
@@ -179,12 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-            console.log('Parsed API Data:', data);
+            // console.log('Parsed API Data:', data);
 
             const legs = data.legs;
             const routes = findRoutes(legs, sourceName, destinationName);
-            console.log('Fetched Legs:', legs);
-            console.log('Found Routes:', routes);
+            // console.log('Fetched Legs:', legs);
+            // // console.log('Found Routes:', routes);
 
             if (routes.length === 0) {
                 outputDiv.innerHTML =
@@ -205,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 selectedRoute = routes[0];
                
-                console.log('Selected Route2:', selectedRoute);
+                // // console.log('Selected Route2:', selectedRoute);
 
                 // Display the route options
                 showRouteOptions(routes, legs);
@@ -215,11 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 //const checkedBoxId = SendRecSelRouteIndex();
                 
                 selectedRoute = routes[CheckedRouteArrIndex]; //selected route comes from function.js
-                console.log("test1", routes[CheckedRouteArrIndex])
-                console.log("test2", CheckedRouteArrIndex)
+                // console.log("test1", routes[CheckedRouteArrIndex])
+                // console.log("test2", CheckedRouteArrIndex)
                 if (selectedRoute) {
                     console.log('Next button clicked. Selected Route:', selectedRoute);
-                   //console.log( getcheckedboxid())
+                   //// console.log( getcheckedboxid())
                     
                     // Find flights for each leg of the selected route
                     const flightsForLegs = findFlightsForLegs(legs, selectedRoute);
