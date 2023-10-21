@@ -5,6 +5,8 @@ let flightEndUnix_1
 let flightStartUnix_1
 let flightEndUnix
 let flightStartUnix
+const API = 'http://localhost:5001/api/v1.0/TravelPrices';
+
 
 function convertToUnixTimestamp(iso8601Date) {
     const date = new Date(iso8601Date);
@@ -75,7 +77,7 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
                  flightStartUnix = new Date(provider.flightStart).getTime();
                  flightEndUnix = new Date(provider.flightEnd).getTime();
                 // Check if the flight starts after the previous flight ends
-                // console.log("flightend_1 on siin>>>>>>>>>>>>>", flightEndUnix_1)
+                // console.log(customFormatToUnixTimestamp(provider.flightStart))
                 if (flightStartUnix >= previousFlightEnd) {
                     // Update the previousFlightEnd to the current flight's end time
                  //   previousFlightEnd = flightEndUnix; <----- kuvab järgmine lend algab peale eelmise lõppu
@@ -162,6 +164,47 @@ function findProvidersForLeg(legs, sourceName, destinationName) {
    
 
     return providersForLeg;
+}
+
+function calculateRouteInfo(selectedFlights, legs) {
+  let totalPrice = 0;
+  let totalDistance = 0;
+  let totalTravelTime = 0;
+  const routeStops = [];
+
+  for (let i = 0; i < selectedFlights.length; i++) {
+    const flight = selectedFlights[i];
+
+    // Calculate total price
+    totalPrice += flight.price;
+    console.log('Legs:', legs);
+    console.log('Flight:', flight);
+    console.log("routeinfo.from", )
+    // Find the corresponding leg based on source and destination
+    const matchingLeg = legs.find((leg) =>
+    leg.routeInfo && flight.routeInfo &&
+    leg.routeInfo.from && flight.routeInfo.from &&
+    leg.routeInfo.to && flight.routeInfo.to &&
+    leg.routeInfo.from.name === flight.routeInfo.from.name &&
+    leg.routeInfo.to.name === flight.routeInfo.to.name
+  );
+
+    if (matchingLeg) {
+      // Calculate total distance
+      totalDistance += matchingLeg.routeInfo.distance;
+      // Calculate total travel time
+      totalTravelTime += flightEndUnix - flightStartUnix;
+
+      // Add source and destination to routeStops
+      routeStops.push(flight.routeInfo.from.name);
+      routeStops.push(flight.routeInfo.to.name);
+    }
+  }
+
+  // Create an array of unique route stops
+  const uniqueStops = [...new Set(routeStops)];
+
+  return { totalPrice, totalDistance, totalTravelTime, routeStops: uniqueStops };
 }
 
 
@@ -320,4 +363,4 @@ function fetchPlanets() {
 }
 
 
-export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg, CheckedRouteArrIndex,  flightStartUnix_1, flightEndUnix_1};
+export { findRoutes, calculateTotalDistance, fetchPlanets, displayProviders, showRouteOptions, findProvidersForLeg, CheckedRouteArrIndex,  flightStartUnix_1, flightEndUnix_1, calculateRouteInfo};

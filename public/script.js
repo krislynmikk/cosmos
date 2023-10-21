@@ -1,4 +1,4 @@
-import {findRoutes, calculateTotalDistance, showRouteOptions, fetchPlanets, findProvidersForLeg, CheckedRouteArrIndex,  flightStartUnix_1, flightEndUnix_1} from './function.js';
+import {findRoutes, calculateTotalDistance, showRouteOptions, fetchPlanets, findProvidersForLeg, CheckedRouteArrIndex,  flightStartUnix_1, flightEndUnix_1, calculateRouteInfo} from './function.js';
 
 const API = 'http://localhost:5001/api/v1.0/TravelPrices';
 let selectedRoute = null; // To store the selected route
@@ -101,7 +101,36 @@ function displayFlightsForLegs(leg) {
            flightStartUnix_2 = customFormatToUnixTimestamp(selectedFlight.flightStart)
             flightEndUnix_2 = customFormatToUnixTimestamp(selectedFlight.flightEnd)
 
-            
+            selectedFlights.push(selectedFlight);
+
+// Calculate the route-level information
+
+const apiUrl = API;
+
+// Make an HTTP GET request to your API
+fetch(apiUrl)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then((data) => {
+    // Assuming that your API response contains the 'legs' array
+    const legs = data.legs;
+
+    // Now you have the 'legs' data, and you can use it as an argument for your functions.
+    const routeInfo = calculateRouteInfo(selectedFlights, legs);
+    console.log("wwwwwwwwwwwwwwwwwww", routeInfo);
+    // Do whatever you need with 'routeInfo' here.
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+
+
+// Now, you can display or use 'routeInfo' as needed
+
 // console.log("Accessing flightStartUnix from another script:", flightStartUnix_1);
 // console.log("Accessing flightEndUnix from another script:", flightEndUnix_1);
             currentLegIndex++;
@@ -157,11 +186,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // You can also call functions that use routeCheckbox_id2 here
     
-    fetchPlanets();
+fetchPlanets();
     const findRoutesButton = document.getElementById('findRoutesButton');
     let nextButton = document.getElementById('proceedToProviders'); // Move the declaration of nextButton here
 
-    async function fetchAndDisplayRoutes() {
+async function fetchAndDisplayRoutes() {
         const sourcePlanetDropdown = document.getElementById('source-planet');
         const destinationPlanetDropdown = document.getElementById(
             'destination-planet'
@@ -222,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 selectedRoute = routes[CheckedRouteArrIndex]; //selected route comes from function.js
                 // console.log("test1", routes[CheckedRouteArrIndex])
-                // console.log("test2", CheckedRouteArrIndex)
+                 
                 if (selectedRoute) {
                     console.log('Next button clicked. Selected Route:', selectedRoute);
                    //// console.log( getcheckedboxid())
