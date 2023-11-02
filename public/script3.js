@@ -408,17 +408,17 @@ async function fetchAndDisplayRoutes() {
                 showRouteOptions(routes, legs);
             }
             nextButton = document.getElementById('proceedToProviders');
-            nextButton.addEventListener('click', async () => {
-                if (CheckedRouteArrIndex !== null) {
-                     
-                    const connectedFlights = findConnectedFlights(selectedRoute, legs);
-                    flightsForLegs = findFlightsForLegs(legs, selectedRoute);
-                    displayConnectedFlights(connectedFlights);
-                    displayCombinedOffer(connectedFlights, flightsForLegs);
-                } else {
-                    alert('Please select a route before proceeding.');
-                }
-            });
+                    nextButton.addEventListener('click', async () => {
+                        if (CheckedRouteArrIndex !== null) {
+                            
+                            const connectedFlights = findConnectedFlights(selectedRoute, legs);
+                            flightsForLegs = findFlightsForLegs(legs, selectedRoute);
+                            displayConnectedFlights(connectedFlights);
+                            displayCombinedOffer(connectedFlights, flightsForLegs);
+                        } else {
+                            alert('Please select a route before proceeding.');
+                        }
+                    });
         
         } catch (error) {
             console.error('Error fetching and displaying routes:', error);
@@ -435,3 +435,76 @@ function clearFlightsList() {
 }
 
 export { findFlightsForLegs, /* other functions you want to use */ };
+
+
+function displayCombinedFlights(offers) {
+    // Iterate through combined offers and display them in your front-end
+    offers.forEach((offer, index) => {
+        // Create DOM elements and populate them with offer details
+        
+        // Iterate through flights in this combined offer
+        offer.offer.forEach((flightInfo, i) => {
+            const flightStart = flightInfo.provider.flightStart;
+            const formattedFlightStart = formatDate(flightStart);
+            const flightEnd = flightInfo.provider.flightEnd;
+            const formattedFlightEnd = formatDate(flightEnd)
+            const flightContainer = document.createElement('div');
+            flightContainer.classList.add('flight-container');
+// Create and populate elements for each flight
+            const flightElement = document.createElement('div');
+            flightElement.classList.add('flight');
+
+            // Populate flight details, e.g., provider, price, flight time, etc.
+            // You can add your HTML structure here
+            const providerInfo = document.createElement('span');
+            providerInfo.classList.add('flight-info');
+            providerInfo.textContent = `Provider: ${flightInfo.provider.company.name}`;
+
+            const source = document.createElement('span');
+            providerInfo.classList.add('flight-info');
+            source.textContent = `Source: ${offer.source}`;
+
+            const destination = document.createElement('span');
+            providerInfo.classList.add('flight-info');
+            destination.textContent = `Destination: ${offer.destination}`;
+        
+            const priceInfo = document.createElement('span');
+            priceInfo.classList.add('flight-info');
+            priceInfo.textContent = `Price: ${flightInfo.provider.price}`;
+        
+            const flightTimeInfo = document.createElement('span');
+            flightTimeInfo.classList.add('flight-info');
+            flightTimeInfo.textContent = `Flight Time: ${flightInfo.provider.flightTime}`;
+        
+            const departureTimeInfo = document.createElement('span');
+            departureTimeInfo.classList.add('flight-info');
+            departureTimeInfo.textContent = `Departure Time: ${formattedFlightStart}`; // Replace with your formatted date
+        
+            const flightEndInfo = document.createElement('span');
+            flightEndInfo.classList.add('flight-info');
+            flightEndInfo.textContent = `Flight End: ${formattedFlightEnd}`; // Replace with your formatted date
+        
+            // Create a button for selecting the flight
+            const selectButton = document.createElement('button');
+            selectButton.classList.add('select-flight');
+            selectButton.textContent = 'Select Flight';
+
+            flightContainer.appendChild(source);
+                                        flightContainer.appendChild(destination);
+                                        flightContainer.appendChild(providerInfo);
+                                        flightContainer.appendChild(priceInfo);
+                                        flightContainer.appendChild(flightTimeInfo);
+                                        flightContainer.appendChild(departureTimeInfo);
+                                        flightContainer.appendChild(flightEndInfo);
+                                        flightContainer.appendChild(selectButton);
+        });
+        const flightItem = document.createElement('li');
+        flightItem.classList.add('flight-item');
+    
+        // Append the flight container to the list item
+        flightItem.appendChild(flightContainer);
+    
+        // Append the combined offer to your front-end
+        connectedFlightsTable.appendChild(combinedOfferElement);
+    });
+}
