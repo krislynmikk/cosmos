@@ -1,7 +1,19 @@
 /* Reset some default styles for consistency */
-body, h1, h2, p, form {
+body, h1, h2, p, form, ul, li {
     margin: 0;
     padding: 0;
+}
+
+/* Use box-sizing to include padding and borders in element's total width */
+* {
+    box-sizing: border-box;
+}
+
+/* Set a consistent font family and background color for the body */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
 }
 
 /* Basic styling for the header */
@@ -17,39 +29,37 @@ main {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling for the route selection form */
-#route-selection {
-    border: 1px solid #ccc;
+form {
     padding: 20px;
     margin-bottom: 20px;
     background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 label {
     font-weight: bold;
+    /* display: block; */
+    margin-bottom: 8px;
 }
 
 select, button {
     margin-top: 10px;
-}
-
-/* Styling for the sorting options */
-#sorting-options {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #f9f9f9;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 /* Style for radio buttons */
 input[type="radio"] {
-    display: none; /* Hide the default radio buttons */
+    display: none;
 }
 
 /* Style for custom radio buttons (checkmark) */
@@ -57,6 +67,7 @@ label[for="sort-ascending"], label[for="sort-descending"] {
     position: relative;
     padding-left: 30px;
     cursor: pointer;
+    display: inline-block;
 }
 
 /* Checkmark for the custom radio buttons */
@@ -64,19 +75,24 @@ label[for="sort-ascending"]::before, label[for="sort-descending"]::before {
     content: "";
     position: absolute;
     left: 0;
-    top: 0;
+    top: 3px;
     width: 20px;
     height: 20px;
-    border: 2px solid #333;
+    border: 2px solid #ccc;
     border-radius: 50%;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 /* Style for the selected custom radio button */
 input[type="radio"]:checked + label::before {
     background-color: #333;
+    border-color: #333;
 }
 
 /* Styling for the route results section */
+#route-results {
+    margin-top: 20px;
+}
 
 /* Basic styling for the footer */
 footer {
@@ -90,9 +106,7 @@ footer {
     background-color: #ffcc00; /* Change to your preferred highlight color */
 }
 
-html {
-    font-family: 'montserrat';
-}
+/* Styling for the flight list */
 #flights-list {
     list-style: none;
     padding: 0;
@@ -100,13 +114,15 @@ html {
 }
 
 .flight-item {
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin: 10px 0;
     background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
 .flight-item:hover {
@@ -122,9 +138,50 @@ html {
     margin-right: 10px;
 }
 
-/* Add more styling as needed */
-
 /* Alternate row colors */
 .flight-item:nth-child(even) {
     background-color: #f5f5f5;
+}
+#connected-flights-table {
+    margin-top: 20px;
+}
+
+.offer-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 10px 0;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+    align-items: center;
+}
+
+.offer-container:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+.flight-info {
+    font-weight: bold;
+}
+
+/* Style each column within the offer-container */
+.flight-info:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+/* Additional styling for specific columns (you can adjust these styles) */
+.offer-container > :nth-child(3) {
+    font-weight: normal;
+    background-color: #e0e0e0;
+    padding: 10px;
+}
+
+.offer-container > :nth-child(4) {
+    font-weight: normal;
+    background-color: #e0e0e0;
+    padding: 10px;
 }
