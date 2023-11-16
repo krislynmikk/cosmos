@@ -1,0 +1,35 @@
+Leg 1: from Venus Space Voyager Wed Nov 15 2023 to Earth Explore Origin Fri Nov 17 2023
+Leg 2: from Earth Explore Origin Mon Nov 20 2023 to Uranus Explore Origin Wed Nov 22 2023
+Leg 3: from Uranus Space Odyssey Fri Nov 24 2023 to Saturn Space Odyssey Wed Nov 29 2023
+
+
+            steps.forEach((stepFlights, routeIndex) => {
+                for (let step = 0; step < stepFlights.length - 1; step++) {
+                    const currentStep = stepFlights[step];
+                    const nextStep = stepFlights[step + 1];
+                    const successfulFlights = [];
+    
+                    console.log(`Step ${step + 1} flights:`);
+                    for (const currentFlight of currentStep) {
+                        for (const nextFlight of nextStep) {
+                            for (const currentProvider of currentFlight.providers) {
+                                for (const nextProvider of nextFlight.providers) {
+                                    const flightEndStep1 = new Date(currentProvider.flightEnd);
+                                    const flightStartStep2 = new Date(nextProvider.flightStart);
+    
+                                    if (flightEndStep1 <= flightStartStep2) {
+                                        successfulFlights.push({ step1: currentProvider, step2: nextProvider });
+                                    }
+                                }
+                            }
+                        }
+                    }
+    console.log(currentStep[0].routeInfo.from.name);
+                    // Display connected flights for this step
+                    console.log(`Step ${step + 1} flights:`);
+                    for (const { step1, step2 } of successfulFlights) {
+                        console.log(`Leg ${step + 1}: from ${currentStep[0].routeInfo.from.name} ${step1.company.name} ${new Date(step1.flightStart).toDateString()} to ${currentStep[0].routeInfo.to.name} ${step2.company.name} ${new Date(step1.flightEnd).toDateString()}`);
+                        console.log(`Leg ${step + 2}: from ${nextStep[0].routeInfo.from.name} ${step2.company.name} ${new Date(step2.flightStart).toDateString()} to ${nextStep[0].routeInfo.to.name} ${step2.company.name} ${new Date(step2.flightEnd).toDateString()}`);
+                    }
+                }
+            });
