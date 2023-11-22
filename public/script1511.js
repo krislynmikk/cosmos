@@ -1,3 +1,4 @@
+
 import { fetchPlanets, findRoutes } from './function.js';
 
 const API = 'http://localhost:5001/api/v1.0/TravelPrices';
@@ -90,45 +91,55 @@ document.addEventListener('DOMContentLoaded', () => {
             displayRoutes(shortestRoutes);
 
             // Now, calculate connected flights
-            const connectedFlights = findConnectedFlights(legs, shortestRoutes);
+           // const connectedFlights = findConnectedFlights(legs, shortestRoutes);
 
-// ...
-connectedFlights.forEach((stepFlights, routeIndex) => {
-    const routeDetails = [];
-
-    for (let step = 0; step < stepFlights.length; step++) {
-        const currentStep = stepFlights[step];
-        const route = [];
-
-        for (const currentFlight of currentStep) {
-            route.push({
-                from: currentStep[0].routeInfo.from.name,
-                to: currentStep[0].routeInfo.to.name,
-                providers: currentStep[0].providers,
-            });
-        }
-
-        routeDetails.push(route);
-    }
-
-    if (routeDetails.length > 0) {
-        console.log(`Route ${routeIndex + 1}:`);
-        routeDetails.forEach((route, stepIndex) => {
-            console.log(`Step ${stepIndex + 1} flights:`);
-            route.forEach((flight, legIndex) => {
-                console.log(`Leg ${legIndex + 1}: from ${flight.from} to ${flight.to}`);
-                flight.providers.forEach(provider => {
-                    console.log(`  - From ${flight.from} to ${flight.to}`);
-                    console.log(`  - Step: ${new Date(provider.flightStart).toDateString()} to ${new Date(provider.flightEnd).toDateString()}`);
+            function identifyConsecutiveFlights(legs) {
+                const consecutiveFlights = [];
+    
+                legs.forEach(leg => {
+                    leg.providers.sort((a, b) => new Date(a.flightStart) - new Date(b.flightStart));
                 });
+    
+                legs.forEach(leg => {
+                    const legFlights = leg.providers;
+                    console.log(legFlights);
+                    const connectedFlights = [];
+                    let currentFlight = legFlights[0];
+                    for (let i = 1; i < legFlights.length; i++) {
+                        const nextFlight = legFlights[i];
+                        const currentFlightEnd = new Date(currentFlight.flightEnd);
+                        const nextFlightStart = new Date(nextFlight.flightStart);
+    
+                        if (currentFlightEnd.getTime() < nextFlightStart.getTime()) {
+                            connectedFlights.push(currentFlight);
+                            currentFlight = nextFlight;
+                        }
+                    }
+    
+                    connectedFlights.push(currentFlight);
+    
+                    if (connectedFlights.length > 1) {
+                        consecutiveFlights.push(connectedFlights);
+                    }
+                });
+    
+                return consecutiveFlights;
+            }
+    
+            // Identify consecutive flights
+            const consecutiveFlights = identifyConsecutiveFlights(legs);
+    
+            // Display the consecutive flights
+            consecutiveFlights.forEach((sequence, index) => {
+                console.log(`Sequence ${index + 1}:`);
+                sequence.forEach((flight, i) => {
+                    console.log(`Leg ${i + 1}: from ${flight.company.name} (${flight.flightStart}) to ${flight.company.name} (${flight.flightEnd})`);
+                });
+                console.log('\n');
             });
-        });
-    }
-});
-
-                                    
-            // Loop through the successfulFlights array and display flights
-    } catch (error) {
+    
+            // Rest of your code...
+        } catch (error) {
             console.error('Error fetching and displaying routes:', error);
         }
     }
