@@ -2,12 +2,10 @@ import { fetchPlanets, findRoutes } from './function.js';
 
 const API = 'http://localhost:5001/api/v1.0/TravelPrices';
 
-// Function to fetch and display routes
 async function fetchAndDisplayRoutes(sourcePlanetDropdown, destinationPlanetDropdown) {
     const sourceName = sourcePlanetDropdown.value;
     const destinationName = destinationPlanetDropdown.value;
 
-    // Validate source and destination planets
     if (sourceName === destinationName) {
         alert('Source and destination planets cannot be the same.');
         return;
@@ -23,29 +21,24 @@ async function fetchAndDisplayRoutes(sourcePlanetDropdown, destinationPlanetDrop
             throw new Error('Error fetching routes');
         }
 
-        const data = await response.json();
-        const legs = data.legs;
+        const { legs } = await response.json();
         const routes = findRoutes(legs, sourceName, destinationName);
         const shortestRouteLength = Math.min(...routes.map((route) => route.length));
         const shortestRoutes = routes.filter((route) => route.length === shortestRouteLength);
 
-        // Display the found routes
         displayRoutes(shortestRoutes);
 
-        // Calculate connected flights
         const connectedFlights = findConnectedFlights(legs, shortestRoutes);
-
-        // Log and store flight sequences
-        logAndStoreFlightSequences(connectedFlights, legs);
+        const storedSequences = logAndStoreFlightSequences(connectedFlights, legs);
+        performComparisons(storedSequences);
     } catch (error) {
         handleFetchError(error);
     }
 }
 
-// Function to display routes
 function displayRoutes(routes) {
     const routeResults = document.getElementById('route-results');
-    routeResults.innerHTML = ''; // Clear previous results
+    routeResults.innerHTML = '';
 
     if (routes.length === 0) {
         routeResults.textContent = 'No routes found.';
@@ -64,7 +57,6 @@ function displayRoutes(routes) {
     });
 }
 
-// Function to find connected flights
 function findConnectedFlights(legs, routes) {
     const connectedFlights = [];
     let shortestRouteLength = Infinity;
@@ -98,12 +90,10 @@ function findConnectedFlights(legs, routes) {
     return connectedFlights;
 }
 
-let previousFlightSequences = []; // Declare a global array to store previous flight sequences
+let previousFlightSequences = [];
 console.log(previousFlightSequences);
-
 function logAndStoreFlightSequences(connectedFlights, legs) {
     const storedFlightSequences = []; // Initialize an array to store flight sequences
-
     connectedFlights.forEach((routeFlights, routeIndex) => {
         console.log(`Route ${routeIndex + 1} flights sequence:`);
 
@@ -137,12 +127,63 @@ function logAndStoreFlightSequences(connectedFlights, legs) {
     });
 
     // Store the current flight sequence in the global array for next use
-    previousFlightSequences.push(storedFlightSequences.flat()); // Store all sequences separately
+    previousFlightSequences.push(storedFlightSequences.flat());
+    // ---------------------- //
+
+console.log("storedFlightSequences", storedFlightSequences);
+console.log("storedFlightSequences[0]", storedFlightSequences[0]);
+console.log("storedFlightSequences[1]", storedFlightSequences[1]);
+console.log("storedFlightSequences[0][0]", storedFlightSequences[0][0]);
+console.log("storedFlightSequences[0][1]", storedFlightSequences[0][1]);
+console.log("storedFlightSequences[0][2]", storedFlightSequences[0][2]);
+console.log("storedFlightSequences[1][0]", storedFlightSequences[1][0]);
+console.log("storedFlightSequences[1][1]", storedFlightSequences[1][1]);
+console.log("storedFlightSequences[1][2]", storedFlightSequences[1][2]);
+
+    const flights1 = storedFlightSequences[0][0].providers;
+    flights1.forEach((time, index) => {
+        console.log(`Nr. ${index + 1}:`, time.providerName," ", time.flightStart, " ", time.flightEnd);
+
+    })
+    console.log("stored", flights1) // Store all sequences separately
+    const flights2 = storedFlightSequences[0][1].providers;
+    flights2.forEach((time, index) => {
+        console.log(`Nr. ${index + 1}:`, time.providerName," ", time.flightStart, " ", time.flightEnd);
+
+    })
+    console.log("stored", flights2) // Store all sequences separately
+    const flights3 = storedFlightSequences[0][2].providers;
+    flights3.forEach((time, index) => {
+        console.log(`Nr. ${index + 1}:`, time.providerName," ", time.flightStart, " ", time.flightEnd);
+
+    })
+    console.log("stored", flights3) // Store all sequences separately
+
+    // ---------------------- //
     return storedFlightSequences;
 }
 
+function performComparisons() {
+    // Access the stored flight sequences from previous executions
+    previousFlightSequences.forEach((flightSequence, index) => {
+        console.log(`Comparisons for sequence ${index + 1}:`);
+        // Perform comparisons or operations with flightSequence array here
+        // For example, compare flight details or prices between sequences
+        // Iterate through the flights and perform the necessary logic
+        flightSequence.forEach((flight) => {
+            // Example: Log flight details for each sequence
+            console.log(`From ${flight.from} to ${flight.to}`);
+            flight.providers.forEach((provider) => {
+              /*  console.log(`  - Provider: ${provider.providerName}`);
+                console.log(`  - Price: ${provider.price}`);
+                console.log(`  - Flight Start: ${provider.flightStart}`);
+                console.log(`  - Flight End: ${provider.flightEnd}`); */
+                // Perform further comparisons or operations here
+            });
+        });
+    });
+}
 
-// Function to handle fetch errors
 function handleFetchError(error) {
     console.error('Error fetching and displaying routes:', error);
 }
@@ -154,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchPlanets(sourcePlanetDropdown, destinationPlanetDropdown);
 
-    // Event listener for finding and displaying routes
     findRoutesButton.addEventListener('click', () => {
         fetchAndDisplayRoutes(sourcePlanetDropdown, destinationPlanetDropdown);
     });
