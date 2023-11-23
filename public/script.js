@@ -139,29 +139,41 @@ console.log("storedFlightSequences[0][2]", storedFlightSequences[0][2]);
 console.log("storedFlightSequences[1][0]", storedFlightSequences[1][0]);
 console.log("storedFlightSequences[1][1]", storedFlightSequences[1][1]);
 console.log("storedFlightSequences[1][2]", storedFlightSequences[1][2]); */
+// Assuming storedFlightSequences is an array of flight sequences
+
+// Define an array to store all flights
+const allFlights = storedFlightSequences[0].map(sequence => sequence.providers);
+
+// Loop through the flights to get 'from' and 'to' values for each flight set
+const fromList = storedFlightSequences[0].map(sequence => sequence.from)
+const toList = storedFlightSequences[0].map(sequence => sequence.to)
+
+// Access flights dynamically using array indexing
+for (let i = 0; i < allFlights.length; i++) {
+    const from = fromList[i];
+    const to = toList[i];
+
+    // Perform operations with 'from', 'to', and 'allFlights[i]'
+    // For example:
+    console.log(`From: ${from}, To: ${to}`);
+    console.log(`Flights:`, allFlights[i]);
+    allFlights[i].forEach(start => {
+        console.log("start", start.flightStart);
+    })
+}
+
+
 
 const flights1 = storedFlightSequences[0][0].providers;
 const from1 = storedFlightSequences[0][0].from;
 const to1 = storedFlightSequences[0][0].to;
-flights1.forEach((time, index) => {
-    const flightStart = new Date(time.flightStart).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-    const flightEnd = new Date(time.flightEnd).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-
-    console.log(`Nr. ${index + 1}:`, time.providerName, " ", from1, " ", flightStart, " ", to1, " ", flightEnd);
-});
-console.log("stored", flights1) // Store all sequences separately
-
 const flights2 = storedFlightSequences[0][1].providers;
 const from2 = storedFlightSequences[0][1].from;
 const to2 = storedFlightSequences[0][1].to;
-flights2.forEach((time, index) => {
-    const flightStart = new Date(time.flightStart).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-    const flightEnd = new Date(time.flightEnd).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-
-    console.log(`Nr. ${index + 1}:`, time.providerName, " ", from2, " ", flightStart, " ", to2, " ", flightEnd);
-});
-console.log("stored", flights2) // Store all sequences separately
-
+const flights3 = storedFlightSequences[0][2].providers;
+const from3 = storedFlightSequences[0][2].from;
+const to3 = storedFlightSequences[0][2].to;
+const trueFlights2to3 = [];
 const trueFlights = [];
 
 for (let i = 0; i < flights1.length; i++) {
@@ -178,49 +190,7 @@ for (let i = 0; i < flights1.length; i++) {
         }
     }
 }
-const trueFlightsList = document.getElementById('trueFlightsList');
 
-trueFlights.forEach((flight, index) => {
-    
-    const flight1Start = new Date(flight.flight1.flightStart).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-    const flight2End = new Date(flight.flight2.flightEnd).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-    const flight2Start = new Date(flight.flight2.flightStart).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-    const flight1End = new Date(flight.flight1.flightEnd).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-
-    const fromPlanet = from1;
-    const to1planet = to1
-    const from2planet = from2
-    const toPlanet = to2;
-
-    const listItem = document.createElement('li');
-    listItem.innerHTML = `
-    Flight ${index + 1}: <br>
-    ${flight.flight1.providerName}<br>
-    ${fromPlanet} ${flight1Start} <br>
-    ${to1planet} ${flight1End} to <br>
-    ${flight.flight2.providerName} <br> 
-    ${from2planet} ${flight2Start} <br>
-    ${toPlanet} ${flight2End}
-`;    const spacer = document.createElement('p');
-    spacer.textContent = '\u00A0'; // Unicode for non-breaking space
-
-    // Append elements to the list
-    trueFlightsList.appendChild(listItem);
-    trueFlightsList.appendChild(spacer);
-});
-console.log("True Flights:", trueFlights);
-
-const flights3 = storedFlightSequences[0][2].providers;
-const from3 = storedFlightSequences[0][2].from;
-const to3 = storedFlightSequences[0][2].to;
-flights3.forEach((time, index) => {
-    const flightStart = new Date(time.flightStart).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-    const flightEnd = new Date(time.flightEnd).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-
-    console.log(`Nr. ${index + 1}:`, time.providerName, " ", from3, " ", flightStart, " ", to3, " ", flightEnd);
-});
-console.log("stored", flights3) // Store all sequences separately
-const trueFlights2to3 = [];
 
 for (let i = 0; i < trueFlights.length; i++) {
     const flight2End = new Date(trueFlights[i].flight2.flightEnd).getTime();
@@ -232,28 +202,11 @@ for (let i = 0; i < trueFlights.length; i++) {
                 flight2: trueFlights[i].flight2,
                 flight3: flights3[j]
             });
-            console.log("---------------", from3, to3, flights3[j]);
         }
     }
 }
 
-const trueFlights2to3List = document.getElementById('trueFlights2to3List');
-
-trueFlights2to3.forEach((flight, index) => {
-    const flight2End = new Date(flight.flight2.flightEnd).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-    const flight3Start = new Date(flight.flight3.flightStart).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric', hour12: false });
-
-    const listItem = document.createElement('li');
-    listItem.innerHTML = `
-    Flight ${index + 1}: <br>
-    ${flight.flight2.providerName}<br>
-    ${from3} ${flight2End} <br>
-    ${to3} ${flight3Start} to <br>
-   
-`;  // Unicode for non-breaking space
-    trueFlights2to3List.appendChild(listItem);
-});
-
+ 
 // Assuming trueFlights and trueFlights2to3 are already populated as described earlier
 
 // Combine flight information from both arrays into a connected route
